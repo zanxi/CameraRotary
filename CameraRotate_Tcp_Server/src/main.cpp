@@ -1,21 +1,22 @@
-#include <iostream>
-#include "Server.h"
+#include "server.h"
 
-int main() 
+int main(int argc, char *argv[])
 {
-    try
-    {
-        Server TCPServer(8899);
-        TCPServer.startServer();
+    Server *server = Server::Run(8899);
+    if (!server) {
+        perror("server");
+        return 1;
     }
-    catch(const TCPServerError& ex)
-    {
-        std::cerr << ex.what() << "\n";
-        std::cout << "Server failed to start." << "\n";
+    while (true) {
+        pthread_t thr;
+        SessionClient *session = server->AcceptSession();
+
+        //if(session->GetFd())map_sess[session->GetFd()]=session;
+
+
+        pthread_create(&thr, NULL, handle_session, session);
     }
-    catch(const std::exception& ex)
-    {
-        std::cerr << ex.what() << "\n";
-        std::cout << "Server stopped working.\n";
-    }
+
+    return 0;
+
 }
