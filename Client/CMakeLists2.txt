@@ -1,0 +1,50 @@
+﻿set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+SET(CXX_FLAGS
+	-g
+	-std=c++11
+	-fpic	# Convenient for dynamic library to link this static library
+	-Wall
+	-Wextra
+	-Werror
+	-Wno-unused-parameter
+	-Wwrite-strings
+	-Wold-style-cast
+	-Wpointer-arith
+	-Woverloaded-virtual
+	#-Wconversion
+	#-Wshadow
+	-rdynamic
+	-march=native
+	-DCHECK_PTHREAD_RETURN_VALUE
+	-D_FILE_OFFSET_BITS=64
+	-MMD
+)
+
+# For Clang compiler. for example: MACOSX
+IF (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	LIST(APPEND CXX_FLAGS "-Wno-null-dereference")
+	LIST(APPEND CXX_FLAGS "-Wno-sign-conversion")
+	LIST(APPEND CXX_FLAGS "-Wno-unused-local-typedef")
+	LIST(APPEND CXX_FLAGS "-Wthread-safety")
+	LIST(REMOVE_ITEM CXX_FLAGS "-rdynamic")
+ENDIF()
+
+set(LIBS
+  #cpp_pthreads_static
+  #gtest
+  #gtest_main
+  pthread) 
+
+
+find_package(Threads REQUIRED) 
+
+set(client_name "Client")
+
+add_executable (${client_name} "Client.cpp")
+target_link_libraries(${TEST_NAME} ${LIBS}) 

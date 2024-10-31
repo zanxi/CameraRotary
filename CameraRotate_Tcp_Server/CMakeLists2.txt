@@ -1,0 +1,29 @@
+﻿set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package(Threads REQUIRED) 
+
+set(server_name "CameraRotate_TCP_Server")
+
+add_executable (${server_name} 
+"src/camera_action.cpp"
+"src/camera_action.h"
+"src/camera_driver.cpp"
+"src/camera_driver.hpp"
+"src/thrsafe/libh.h"
+"src/main.cpp"
+"src/operations.cpp"
+"src/operations.h"
+"src/thrsafe/ReadersWriterLock.h"
+"src/Server.cpp"
+"src/Server.h"
+"src/thrsafe/shd.h"
+"src/thrsafe/thr_safe.h"
+"src/thrsafe/tsmap.h"
+)
+
+
