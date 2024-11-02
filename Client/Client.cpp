@@ -8,64 +8,6 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-
-std::string uniqueArr;
-std::string sortString(std::string str){
-    // declare a string to store the unique characters
-    std::string unique = "";
-    std::string sortedString = "";
-    for(int i=0; i< str.length(); i++){
-        if(isalpha(str[i])){
-            
-            int match =0;
-            for(int j=0; j < unique.length(); j++){
-                if(unique.at(j)==str.at(i)){
-                    match =1;
-                    break;
-                }
-            }
-            if(match == 0){
-              unique += str[i];
-            }
-        }
-    }
-    // copy the unique characters to the global array
-    uniqueArr = unique;
-    int freq[unique.length()];
-    for(int i=0; i< unique.length(); i++){
-        freq[i] = 0;
-        for(int j=0; j< str.length(); j++){
-            if(unique.at(i)==str.at(j)){
-                freq[i]++;
-            }
-        }
-        // printf("%d",freq[i]);
-    }
-    // printf("\n");
-    // sort the frequencies in descending order
-    for(int i=0; i< unique.length(); i++){
-        for(int j=i+1; j< unique.length(); j++){
-            if(freq[i] < freq[j]){
-                int temp = freq[i];
-                freq[i] = freq[j];
-                freq[j] = temp;
-                char temp2 = unique.at(i);
-                unique.at(i) = unique.at(j);
-                unique.at(j) = temp2;
-            }
-        }
-        // printf("%d",freq[i]);
-    }
-    // printf("\n");
-    // sort the string based on the frequency of each character
-    for(int i=0; i < unique.length(); i++){
-        for(int j=0; j < freq[i]; j++){
-            sortedString += unique.at(i);
-        }
-    }
-    // printf("\n%s\n",sortedString.c_str());
-    return sortedString;
-}
 std::string splitArr;
 
 void* readServer(void* arg)
@@ -132,7 +74,7 @@ int main(int argc, char** argv)
     while(1){
         if(splitArr.length() > 0){
             //fprintf(stdout, "%s\n", "SHANNON-FANO-ELIAS Codes:");
-            fprintf(stdout," ---- Answer from Server\n %s\n", splitArr.c_str());
+            fprintf(stdout,"%s\n", splitArr.c_str());
             fflush(stdout);
             splitArr = "";
         }

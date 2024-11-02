@@ -1,5 +1,4 @@
-#include "sessionclient.h"
-#include "server.h"
+#include "Server.h"
 #include "camera_driver.hpp"
 
 #include <iostream>
@@ -11,6 +10,7 @@
 /* ------------------------ Server ----------------------- */
 /* ------------------------------------------------------- */
 
+// запуск сервера - связь и прослушка
 Server *Server::Run(int port)
 {
 	int sd = socket(AF_INET, SOCK_STREAM, 0);
@@ -33,6 +33,7 @@ Server *Server::Run(int port)
 	return new Server(addr, sd);
 }
 
+// подключаем клиента и создаем его объект
 SessionClient *Server::AcceptSession()
 {
 	sockaddr_in addr;
@@ -46,9 +47,11 @@ SessionClient *Server::AcceptSession()
 /* -------------- main and thread function --------------- */
 /* ------------------------------------------------------- */
 
+// слушаем клиента
+
 void *handle_session(void *session)
 {
-    SessionClient *sess = reinterpret_cast<SessionClient*>(session);
+    SessionClient *sess = reinterpret_cast<SessionClient*>(session);    
 	while (true) {		        
         bool ok = sess->EnterInteractiveMode();
         //if(map_sess.)map_sess.insert(std::map<int, SessionClient*>::value_type(sess->GetFd(),sess));

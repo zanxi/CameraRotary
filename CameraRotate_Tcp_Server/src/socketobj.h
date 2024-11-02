@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
+// базовый класс инициализации клиентов и сервера TCP - с свойствами - пара адрес-порт
+
 enum {
     listen_queue_len = 16,
     buf_len = 1024,
@@ -29,7 +31,7 @@ public:
 
 protected:
     char *ok_msg = "Ok\n";    
-    char *unknown_cmd = "FAILED\n";
+    char *unknown_cmd = "unknown command\n";
 
 };
 

@@ -38,6 +38,22 @@ public:
         return result;
     }
 
+   static char* string_to_char_s(std::string msg)
+   {
+       //std::vector<char> v(msg.begin(),msg.end());
+       //char* _msg = &v[0];
+       //return _msg;
+       return const_cast<char*>(msg.c_str());
+
+   }
+
+//   static char[] string_to_char_arraye(std::string msg)
+//   {
+//       char arr[msg.length()];
+//       for(int i=0; i<msg.length();i++)arr[i]=msg[i];
+//       return arr;
+//   }
+
    static void example()
    {
        std::string str = "adsf-+qwret-+nvfkbdsj-+orthdfjgh-+dfjrleih";

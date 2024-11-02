@@ -10,7 +10,7 @@
 #include <vector>
 #include <list>
 
-#include "sessionclient.h"
+#include "../sessionclient.h"
 
 #define MAX_QUEUE_SIZE	20
 #define MAX_POOL_SIZE	10
