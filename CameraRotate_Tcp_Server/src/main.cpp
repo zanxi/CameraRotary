@@ -1,47 +1,73 @@
-//#include "taskqueue.h"
-//#include "threadpool.h"
-#include "Server.h"
+//
+//  main.cpp
+//  TaskLoop
+//
+//  Created by pansafeimager on 15/12/9.
+//  Copyright © 2015年 imager. All rights reserved.
+//
 
-/* Check Arguments */
-int CheckArgs(int args, char** argv) {
+#include <memory>
+#include "camera_action.h"
 
-    if (args == 3) {
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include "RunLoop.h"
+#include "server.h"
+#include "socketclient.h"
 
-        int queue_size = atoi(argv[1]);
-        int pool_size = atoi(argv[2]);
-
-        // if ((queue_size > 0 && queue_size <= MAX_QUEUE_SIZE) && (pool_size > 0 && pool_size <= MAX_POOL_SIZE)) {
-        //     return 0;
-        // }
-    }
-    std::cout << "\nusage: ./pool [Queue Size] [Thread Count] // MAX_QUEUE_SIZE == 20, MAX_POOL_SIZE == 10\n" << std::endl;
-    return -1;
+void Func()
+{
+    std::cout<<"hello world!" << std::endl;
 }
 
-int main(int args, char** argv) {
+int Add(int a, int b){
+    std::cout<< "call Add()" << std::endl;
+    return a + b;
+}
+int main(int argc, const char * argv[]) {
 
-    // создание подключения к камере
-    Camera_Action *ca = new Camera_Action;
+    std::shared_ptr<Camera_Action> dc(new Camera_Action);
 
-    // запуск tcp сервера по порту 8899
-    Server *server = Server::Run(8899);
-    if (!server) {
-        perror("server");
-        return 1;
+    task::Runloop* loop = task::Runloop::Create();
+
+    int port = 5555;
+    Server srv(port);
+    if(!srv.Listen())
+    {
+        std::cout<<"Bad listen Server: [port:"<<port<<"]\n";
+        return 0;
     }
-    // запуск слушателя подключаемых клиентов
-    while (true) {
-        pthread_t thr;
-        // ждем клиента ....
-        SessionClient *session = server->AcceptSession();
-        session->SetCamera(ca); // передает клиентам объект камеру
+    std::cout<<"Run Server: [port:"<<port<<"]\n";
 
-        //if(session->GetFd())map_sess[session->GetFd()]=session;
+    while(true)
+    {
+        srv.Accept();
 
-        // сеанс связи с клиентом в отдельном потоке
-        pthread_create(&thr, NULL, handle_session, session); // handle_session - функция потока связи с клиентом и обработки очереди сообщений, 
-        // лежит в server.h
+        task::Clouser funcClient(
+            [&srv, &dc]
+            {
+                SocketClient client(srv.getClientSocket(),srv.getClientAddr());
+                client.setCamera(dc);
+                client.run();                
+            });
+        loop->AddRunner(funcClient);
     }
 
-    return 0;
+
+    task::Clouser func([]{Func();});
+    task::Clouser clouser([]{Add(1,2);});
+
+    loop->AddRunner(clouser);
+    loop->AddRunner(clouser);
+    loop->AddRunner(clouser);
+    loop->AddRunner(clouser);
+    loop->AddRunner(func);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    loop->stopDoLoop();
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    //while(1);
+    std::cout<<"\nFINISH APPLICATION\n";
+    return 1;
 }

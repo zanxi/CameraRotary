@@ -10,32 +10,32 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "sessionclient.h"
-
-// класс TCP сервера для работы с камерой
-
-/* ------------------------------------------------------- */
-/* ------------------------ Server ----------------------- */
-/* ------------------------------------------------------- */
-
-class Server : public SocketObj {
+#include <stdlib.h>
 
 
-    Server(sockaddr_in& addr, int fd)
-        : SocketObj(addr, fd)
-        {}
+class Server
+{
+private:    
+    int fd = 0;//INVALID_SOCKET;
+    int port;
+
+    int mClientSocket;
+    char* clientIp;
+    sockaddr_in clientAddr;
+    int clientPort;
+
+
 public:
-    static Server* Run(int port);
-    SessionClient *AcceptSession();
+    explicit Server(int _port);// I forget to add a seperate start() QAQ
+    ~Server();
+
+    bool Listen();
+    void Accept();
+
+    char* getClientIp(){ return clientIp; };
+    sockaddr_in getClientAddr(){ return clientAddr; };
+    int getClientPort(){ return clientPort; };
+    int getClientSocket(){ return mClientSocket; };
 };
-
-
-/* ------------------------------------------------------- */
-/* -------------- main and thread function --------------- */
-/* ------------------------------------------------------- */
-
-void *handle_session(void *session);
-int main_StartTcpServer();
-
 
 #endif // SERVER_H
